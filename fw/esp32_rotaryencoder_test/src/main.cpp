@@ -54,18 +54,10 @@ void loop()
   static int lastCounter = 0;
   if (counter != lastCounter)
   {
-    Serial.print("Encoder value: ");
+    // Serial.print("Encoder value: ");
     Serial.println(counter);
     lastCounter = counter;
     led_switch = !led_switch;
-    if (led_switch)
-    {
-      digitalWrite(LED_BLUE, HIGH);
-    }
-    else
-    {
-      digitalWrite(LED_BLUE, HIGH);
-    }
   }
   delay(10);
 }
