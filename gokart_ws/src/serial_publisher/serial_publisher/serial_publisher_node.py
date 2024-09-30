@@ -11,13 +11,15 @@ class SerialPublisher(Node):
         super().__init__('serial_publisher')
         self.counter_publisher = self.create_publisher(Int32, 'encoder_value', 10)
         self.cmd_vel_publisher = self.create_publisher(Twist, 'cmd_vel', 10)
-        self.serial_port = serial.Serial('/dev/ttyUSB1', 115200, timeout=1)
+        self.serial_port = serial.Serial('/dev/ttyUSB0', 115200, timeout=1)
         self.read_thread = threading.Thread(target=self.read_serial)
         self.read_thread.daemon = True
         self.read_thread.start()
         self.last_counter = 0
         self.last_time = time.time()
-        self.pulses_per_revolution = 360  # エンコーダの1回転あたりのパルス数（例）
+        self.pulses_per_revolution = 720  # エンコーダの1回転あたりのパルス数（例）
+        self.filtered_speed = 0.0
+        self.alpha = 0.1  # ローパスフィルタの係数（0 < alpha <= 1）
 
     def read_serial(self):
         while True:
@@ -34,6 +36,9 @@ class SerialPublisher(Node):
                     speed_rps = speed_rpm / 60  # 回転毎分から回転毎秒に変換
                     speed_rad_per_sec = speed_rps * 2 * 3.141592653589793  # rad/sに変換
 
+                    # ローパスフィルタの適用
+                    self.filtered_speed = self.alpha * speed_rad_per_sec + (1 - self.alpha) * self.filtered_speed
+
                     self.last_counter = counter_value
                     self.last_time = current_time
 
@@ -43,9 +48,9 @@ class SerialPublisher(Node):
                     self.get_logger().info(f'Publishing counter: {counter_msg.data}')
 
                     twist_msg = Twist()
-                    twist_msg.angular.z = speed_rad_per_sec
+                    twist_msg.angular.z = self.filtered_speed
                     self.cmd_vel_publisher.publish(twist_msg)
-                    self.get_logger().info(f'Publishing speed (rad/s): {twist_msg.angular.z}')
+                    self.get_logger().info(f'Publishing filtered speed (rad/s): {twist_msg.angular.z}')
                 except ValueError:
                     self.get_logger().warn(f'Invalid data received: {line}')
 
