@@ -3,3 +3,4 @@ gokart_ws/log
 gokart_ws/install
 fw/micro-ros*
 fw/sketch_micro-ros_test
+venv
