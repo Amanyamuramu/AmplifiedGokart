@@ -1,6 +1,13 @@
-gokart_ws/build
-gokart_ws/log
-gokart_ws/install
 fw/micro-ros*
 fw/sketch_micro-ros_test
-venv
+
+# for Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/*
+
+.vscode/
+
+# csvfile
+*.csv
