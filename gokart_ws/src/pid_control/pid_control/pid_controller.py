@@ -25,7 +25,7 @@ class PIDController(Node):
         
         self.subscription = self.create_subscription(
             Odometry,
-            'odom',
+            'odom_qos_converted',
             self.odom_callback,
             10)
         self.publisher = self.create_publisher(Twist, 'cmd_vel', 10)
@@ -88,8 +88,8 @@ class PIDController(Node):
             self.write_to_csv(datetime.now(), self.linear_cmd_vel, filtered_linear_speed, corrected_linear_speed,
                               self.angular_cmd_vel, filtered_angular_speed, corrected_angular_speed)
             velocity_msg = Twist()
-            velocity_msg.linear.x = corrected_linear_speed
-            # velocity_msg.linear.x = 0.0
+            # velocity_msg.linear.x = corrected_linear_speed
+            velocity_msg.linear.x = 0.0
             velocity_msg.angular.z = corrected_angular_speed
             self.publisher.publish(velocity_msg)
             self.get_logger().info(f'Publishing corrected velocities: linear {corrected_linear_speed}, angular {corrected_angular_speed}')
