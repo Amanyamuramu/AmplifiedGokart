@@ -23,7 +23,6 @@ class OdomQosConverter(Node):
             qos_profile_pub)
 
     def listener_callback(self, msg):
-        # そのまま新しいトピックにパブリッシュする
         self.publisher.publish(msg)
         self.get_logger().info('Forwarding scan data to /odom_qos_converted')
 
