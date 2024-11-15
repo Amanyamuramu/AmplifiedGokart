@@ -21,7 +21,8 @@ setup(
     entry_points={
         'console_scripts': [
             'serial_publisher_node = gokart.serial_publisher_node:main',
-            'encoder_publisher = gokart.encoder_publisher:main'
+            'encoder_publisher = gokart.encoder_publisher:main',
+            'odom_qos_converter = gokart.odom_qos_converter:main',
         ],
     },
 )
